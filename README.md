@@ -1,0 +1,2 @@
+# TANGKAS 
+# PERTEMUAN 10
