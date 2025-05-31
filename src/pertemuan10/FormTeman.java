@@ -29,7 +29,8 @@ public class FormTeman extends javax.swing.JFrame {
         TTM.setModel(TM);
         TM.addColumn("No");
         TM.addColumn("namateman");
-//        TM.addColumn("alamat");  
+        TM.addColumn("alamat");
+        TM.addColumn("telp");
 
 
         this.dtTemanList();
@@ -49,7 +50,7 @@ public class FormTeman extends javax.swing.JFrame {
         
                 
         Connection cnn = koneksi();
-        PreparedStatement PS = cnn.prepareStatement("SELECT idteman, namateman FROM datateman;");
+        PreparedStatement PS = cnn.prepareStatement("SELECT * FROM datateman;");
         ResultSet RS = PS.executeQuery();
         
         
@@ -57,9 +58,12 @@ public class FormTeman extends javax.swing.JFrame {
         TM.fireTableDataChanged();
         
         while(RS.next()){
-            Object[]dta = new Object[2];
+            Object[]dta = new Object[4];
                 dta[0] = RS.getInt("idteman");
                 dta[1] = RS.getString("namateman");
+                dta[2] = RS.getString("alamat");
+                dta[3] = RS.getString("telp");
+                
                 
                 
                 
@@ -84,10 +88,12 @@ public class FormTeman extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txTELP = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnTambah = new javax.swing.JButton();
+        btnUbah = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         TTM = new javax.swing.JTable();
+        btnHapus = new javax.swing.JButton();
+        btnClose = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Data Teman");
@@ -116,14 +122,19 @@ public class FormTeman extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Yu Gothic UI", 1, 24)); // NOI18N
         jLabel4.setText("Data Teman");
 
-        jButton1.setText("Simpan");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnTambah.setText("Tambah");
+        btnTambah.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnTambahActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Batal");
+        btnUbah.setText("Ubah");
+        btnUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahActionPerformed(evt);
+            }
+        });
 
         TTM.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -151,17 +162,26 @@ public class FormTeman extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TTM);
 
+        btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
+
+        btnClose.setText("Close");
+        btnClose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCloseActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(73, 73, 73)
-                        .addComponent(jButton1)
-                        .addGap(99, 99, 99)
-                        .addComponent(jButton2))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jLabel4))
@@ -175,7 +195,14 @@ public class FormTeman extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txNAMA)
                             .addComponent(txALAMAT)
-                            .addComponent(txTELP, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txTELP, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnTambah)
+                                .addGap(78, 78, 78)
+                                .addComponent(btnHapus)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnClose))
+                            .addComponent(btnUbah))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -197,15 +224,18 @@ public class FormTeman extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txTELP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnTambah)
+                            .addComponent(btnHapus)
+                            .addComponent(btnClose))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUbah)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(179, 179, 179)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(16, 16, 16))
+                        .addGap(113, 113, 113))))
         );
 
         pack();
@@ -215,30 +245,46 @@ public class FormTeman extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txNAMAActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnTambahActionPerformed
 
     private void TTMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TTMMouseClicked
-        String sql = "SELECT * FROM datateman WHERE idteman="+TTM.getValueAt( TTM.getSelectedRow(), 0 )+";";
-        Connection cnn = koneksi();
-        PreparedStatement PS = null;
-        try {
-            PS = cnn.prepareStatement(sql);
-        } catch (SQLException ex) {
-            Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            ResultSet RS = PS.executeQuery();
-            txNAMA.setText(RS.getString("namateman"));
-            txALAMAT.setText(RS.getString("alamat"));
-            txTELP.setText(RS.getString("telp"));
-            
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        String sql = "SELECT * FROM datateman WHERE idteman="+TTM.getValueAt( TTM.getSelectedRow(), 0 )+";";
+//        Connection cnn = koneksi();
+//        PreparedStatement PS = null;
+//        try {
+//            PS = cnn.prepareStatement(sql);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        try {
+//            ResultSet RS = PS.executeQuery();
+//            txNAMA.setText(RS.getString("namateman"));
+//            txALAMAT.setText(RS.getString("alamat"));
+//            txTELP.setText(RS.getString("telp"));
+//            
+//            
+//        } catch (SQLException ex) {
+//            Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        txNAMA.setText(TTM.getValueAt( TTM.getSelectedRow(), 1 ).toString());
+        txALAMAT.setText(TTM.getValueAt(TTM.getSelectedRow(), 2 ).toString());
+        txTELP.setText(TTM.getValueAt(TTM.getSelectedRow(), 3 ).toString());
+       
     }//GEN-LAST:event_TTMMouseClicked
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUbahActionPerformed
+
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCloseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -281,8 +327,10 @@ public class FormTeman extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TTM;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnClose;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnTambah;
+    private javax.swing.JButton btnUbah;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
