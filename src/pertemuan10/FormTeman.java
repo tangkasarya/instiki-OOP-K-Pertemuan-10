@@ -11,13 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Tangkas
  * 24 Mei 2025
  */
 public class FormTeman extends javax.swing.JFrame {
+    String edNama;
     DefaultTableModel TM = new DefaultTableModel();
 
     /**
@@ -32,20 +35,81 @@ public class FormTeman extends javax.swing.JFrame {
         TM.addColumn("alamat");
         TM.addColumn("telp");
 
-
         this.dtTemanList();
-
-        Connection cnn = koneksi();
-        PreparedStatement PS = cnn.prepareStatement("SELECT * FROM datateman; ");
-        ResultSet RS = PS.executeQuery();
+        fielddisEnabled(false);
+        tombolisEnabled(false);
+        btnTambah.setEnabled(true);
+        btnClose.setEnabled(true);
         
-        while (RS.next()){
-            txNAMA.setText(RS.getString("namateman"));
-            txALAMAT.setText(RS.getString("alamat"));
-            txTELP.setText(RS.getString("telp"));
-            
-        }
+
     }
+    
+    private void fielddisEnabled(boolean opsi){
+        txNAMA.setEditable(opsi);
+        txALAMAT.setEditable(opsi);
+        txTELP.setEditable(opsi);
+        
+    }
+    private void tombolisEnabled(boolean opsi){
+        btnTambah.setEnabled(opsi);
+        btnUbah.setEnabled(opsi);
+        btnHapus.setEnabled(opsi);
+        btnClose.setEnabled(opsi);
+  
+    }
+    private void resetForm(){
+        txNAMA.setText("");
+        txALAMAT.setText("");
+        txTELP.setText("");
+        
+    }
+    /*CURD*/
+    private void storeData() throws SQLException{
+        
+        String namateman = txNAMA.getText();
+        String alamat = txALAMAT.getText();
+        String telp = txTELP.getText();
+        
+        
+        Connection cnn = koneksi();
+        PreparedStatement PS = cnn.prepareStatement("INSERT INTO datateman(namateman, alamat, telp) VALUES(?,?,?) ;");
+        PS.setString(1, namateman);
+        PS.setString(2, alamat);
+        PS.setString(3, telp);
+        PS.executeUpdate();
+        
+        ResultSet RS = PS.executeQuery();
+    }
+    private void updateData()throws SQLException{
+        String namateman = txNAMA.getText();
+        String alamat = txALAMAT.getText();
+        String telp = txTELP.getText();
+        
+        Connection cnn = koneksi();
+        PreparedStatement PS = cnn.prepareStatement("UPDATE datateman SET namateman=?, alamat=?, telp=? WHERE namateman=?;");
+        PS.setString(1, namateman);
+        PS.setString(2, alamat);
+        PS.setString(3, telp);
+        PS.setString(4, this.edNama);
+        PS.executeUpdate();
+        
+        ResultSet RS = PS.executeQuery();
+
+    }
+    private void destroyData() throws SQLException{
+        String namateman = txNAMA.getText();
+        String alamat = txALAMAT.getText();
+        String telp = txTELP.getText();
+        
+        
+        Connection cnn = koneksi();
+        PreparedStatement PS = cnn.prepareStatement("DELETE datateman WHERE namateman;");
+        PS.setString(1, namateman);
+        PS.executeUpdate();
+        
+        ResultSet RS = PS.executeQuery();
+    }
+    /*CURD*/
     private void dtTemanList() throws SQLException{
         
                 
@@ -246,7 +310,24 @@ public class FormTeman extends javax.swing.JFrame {
     }//GEN-LAST:event_txNAMAActionPerformed
 
     private void btnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahActionPerformed
-        // TODO add your handling code here:
+    if (btnTambah.getText().equals("Tambah")) {
+    tombolisEnabled(false);
+    btnTambah.setText("Simpan");
+    btnClose.setText("Batal");
+    btnTambah.setEnabled(true);
+    btnClose.setEnabled(true);
+    resetForm();    
+    } else {
+    btnTambah.setText("Tambah");
+    btnClose.setText("Close");
+    try{
+        storeData();
+        dtTemanList();
+    }catch (SQLException ex) {
+        Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    }
+
     }//GEN-LAST:event_btnTambahActionPerformed
 
     private void TTMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TTMMouseClicked
@@ -271,19 +352,70 @@ public class FormTeman extends javax.swing.JFrame {
         txNAMA.setText(TTM.getValueAt( TTM.getSelectedRow(), 1 ).toString());
         txALAMAT.setText(TTM.getValueAt(TTM.getSelectedRow(), 2 ).toString());
         txTELP.setText(TTM.getValueAt(TTM.getSelectedRow(), 3 ).toString());
+        
+        btnUbah.setEnabled(true);
+        btnHapus.setEnabled(true);
        
     }//GEN-LAST:event_TTMMouseClicked
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
-        // TODO add your handling code here:
+        String isNama = txNAMA.getText();
+        int jopsi = JOptionPane.showOptionDialog(this,
+                "Apakah yakin ingin menghapus data "+isNama+"?", 
+                "Konfirmasi Hapus Data",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, 
+                null, null, null);
+        if(jopsi == JOptionPane.YES_OPTION){
+            try {
+                destroyData();
+                dtTemanList();
+                
+                resetForm();
+                btnUbah.setEnabled(false);
+                btnHapus.setEnabled(false);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }    
+       
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
+        if(btnUbah.getText().equals("Ubah")){
+            btnUbah.setText("Simpan");
+            btnClose.setText("Batal");
+            tombolisEnabled(false);
+            btnUbah.setEnabled(true);
+            btnClose.setEnabled(true);
+            btnClose.setEnabled(true);
+            fielddisEnabled(true);
+            this.edNama = txNAMA.getText();
+        }else{
+            try {
+                updateData();
+                dtTemanList();
+            } catch (SQLException ex) {
+                Logger.getLogger(FormTeman.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            btnUbah.setText("Ubah");
+            btnClose.setText("Tutup");
+            btnTambah.setEnabled(true);
+            btnHapus.setEnabled(true);
+        }
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
-        // TODO add your handling code here:
+        int jopsi = JOptionPane.showOptionDialog(this, "yakin akan menutup aplikasi?", "konfirmasi tutup aplikasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if (jopsi == JOptionPane.YES_OPTION){
+        System.exit(0);
+        }
+        else{
+            resetForm();
+            fielddisEnabled(false);
+            btnTambah.setText("Tambah");
+            btnClose.setText("Tutup");
+        }
     }//GEN-LAST:event_btnCloseActionPerformed
 
     /**
@@ -340,4 +472,6 @@ public class FormTeman extends javax.swing.JFrame {
     private javax.swing.JTextField txNAMA;
     private javax.swing.JTextField txTELP;
     // End of variables declaration//GEN-END:variables
+
+    
 }
